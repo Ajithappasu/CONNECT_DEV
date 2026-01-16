@@ -1,34 +1,37 @@
 const  express = require('express');
 
 const app = express();
-require("./config/DataBase")
-// creating server 
+const connectDB= require("./config/DataBase")
+const User = require("./scema/user");
 
-// use api will match all the type of users requests get post patch etc ....  
 
-// using +,*, ? operator in  routes 
 
-app.get("/about",(req,res)=>{
-  console.log(req.query);
-   res.send({firstname:"ajith_sai", lastName:"appasu"});
+app.post("/signup", async(req,res)=>{
+const user = new User({
+    firstName :"amith",
+    lastName :"shhas",
+    emailId : "amthsai111@gmail.com",
+    password: "amith@123",
+    age:25,
+    gender:"female",
+
 });
-app.post("/about",(req,res)=>{
-res.send("Data sent successully to the user ");
-});
-app.delete("/about",(req, res)=>{
-    res.send("Data deleted succesfully");
-});
-// app.use("/users",(req,res)=>{
-//     res.end("ajith is the uese..");
-// })
-// // always keep the home route at lsasrt
-// app.use("/",(req,res)=>{
-//     res.end("heloo eatch and every one bbbb ....");
-// })
-app.use("/about",(req,res)=>{
-    res.end("this is ajith sai .");
+try{
+await user.save();
+res.send("data saved successfully");
+}catch(err){
+    res.send("error oucered ");
+}
 })
 
-app.listen(30000,()=>{
+connectDB()
+.then(()=>{
+    console.log("connection established ");
+// ew have to run the server only when the database is connected successfully .
+    app.listen(30000,()=>{
 console.log("server successful listining on   ajith 3000.....");
 });
+})
+.catch(()=>{
+    console.log("error not connected ");
+})
