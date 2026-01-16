@@ -4,18 +4,11 @@ const app = express();
 const connectDB= require("./config/DataBase")
 const User = require("./scema/user");
 
+app.use(express.json());
 
 
 app.post("/signup", async(req,res)=>{
-const user = new User({
-    firstName :"amith",
-    lastName :"shhas",
-    emailId : "amthsai111@gmail.com",
-    password: "amith@123",
-    age:25,
-    gender:"female",
-
-});
+const user = new User(req.body);
 try{
 await user.save();
 res.send("data saved successfully");
