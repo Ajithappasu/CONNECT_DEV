@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "connecting developers",
   "main": "index.js",
-"scripts": {
-  "dev": "nodemon BACKEND/src/app.js",
-  "start": "node BACKEND/src/app.js"
-}
-,
+  "scripts": {
+    "dev": "nodemon BACKEND/src/app.js",
+    "start": "node BACKEND/src/app.js"
+  },
   "keywords": [
     "node",
     "javascript",
@@ -16,6 +15,7 @@
   "author": "Ajith Sai Appasu",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.1.3"
   }
 }

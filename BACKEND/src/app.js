@@ -1,7 +1,7 @@
 const  express = require('express');
 
 const app = express();
-
+require("./config/DataBase")
 // creating server 
 
 // use api will match all the type of users requests get post patch etc ....  
