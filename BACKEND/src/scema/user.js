@@ -1,4 +1,5 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const validator= require("validator");
 
 const userScema = new mongoose.Schema({
     firstName:{
@@ -15,10 +16,20 @@ const userScema = new mongoose.Schema({
         required : true,
         unique :true,
         trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("it is not a valid email");
+            }
+        }
     },
     password :{
         type:String,
         required :true,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("not strong passwors");
+            }
+        }
     },
     age :{
         type:Number,
@@ -40,6 +51,11 @@ const userScema = new mongoose.Schema({
     photo_url:{
         type:String,
         default:"https://icon-library.com/images/user-icon-jpg/user-icon-jpg-29.jpg",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("not valid URL");
+            }
+        }
     },
     skills :{
         type: [String],

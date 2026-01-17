@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const connectDB = require("./config/DataBase")
 const User = require("./scema/user");
+const validator = require("validator");
 
 // we use this middleWare to  convert  json format request data to  java script object format. 
 app.use(express.json());
@@ -48,12 +49,16 @@ app.patch("/update/:Id", async (req, res) => {
     try {
          const ID = req.params?.Id;
     const data = req.body;
+    // we declare the  parametes that are  allowd for updating
     const AllowedUpdates =["firstName", "lastName", "password","age", "about","skills"]
     const isUpdatesAllowed = Object.keys(data).every((k)=>{
         return AllowedUpdates.includes(k);
     });
     if(!isUpdatesAllowed){
         throw new Error("update not allowed");
+    }
+    if(data?.skills.length>10){
+        throw new Error("skills must not be grater than 10");
     }
         await User.findByIdAndUpdate({ _id: ID }, data);
         res.send("updated succesfully");
