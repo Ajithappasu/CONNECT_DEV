@@ -5,6 +5,7 @@ const connectDB = require("./config/DataBase")
 const User = require("./scema/user");
 const validator = require("validator");
 const {validateSignUpData}  = require("./utils/validation");
+const bcrypt= require("bcrypt");
 
 
 // we use this middleWare to  convert  json format request data to  java script object format. 
@@ -69,21 +70,18 @@ app.patch("/update/:Id", async (req, res) => {
     }
 })
 
-
-
-
-
-
 app.post("/signup", async (req, res) => {
     // we are getting data in   raw formmt in the request body  
        try{
 validateSignUpData(req)
-}catch(err){
-  return  res.status(404).send("error occured"+err);
-}
-    const user = new User(req.body);
+ const {firstName,lastName,emailId,password,age,gender,about,photo_url,skills}=req.body;
+// we are encrypting password and storing the encrypted password in it 
+ const passwordHash =  await bcrypt.hash(password,10);
+ console.log(passwordHash);
+
+    const user = new User( {firstName,lastName,emailId,password : passwordHash,age,gender,about,photo_url,skills});
     // geting data from body ;
-    try {
+    
         await user.save();
         res.send("data saved successfully");
     } catch (err) {
