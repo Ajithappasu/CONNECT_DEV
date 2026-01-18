@@ -4,6 +4,8 @@ const app = express();
 const connectDB = require("./config/DataBase")
 const User = require("./scema/user");
 const validator = require("validator");
+const {validateSignUpData}  = require("./utils/validation");
+
 
 // we use this middleWare to  convert  json format request data to  java script object format. 
 app.use(express.json());
@@ -11,14 +13,14 @@ app.use(express.json());
 
 
 
-
 // to display the data of the users
 app.get("/getdata", async (req, res) => {
+
     try {   // this User is the one we iported from above 
         const allUsers = await User.find({});
         res.send(allUsers);
     } catch (err) {
-        res.send("someting went woring  error occured " + err);
+      return   res.send("someting went woring  error occured " + err);
     }
 });
 
@@ -74,6 +76,11 @@ app.patch("/update/:Id", async (req, res) => {
 
 app.post("/signup", async (req, res) => {
     // we are getting data in   raw formmt in the request body  
+       try{
+validateSignUpData(req)
+}catch(err){
+  return  res.status(404).send("error occured"+err);
+}
     const user = new User(req.body);
     // geting data from body ;
     try {
