@@ -89,6 +89,26 @@ validateSignUpData(req)
     }
 })
 
+// login api  user logined in 
+app.post("/login", async(req,res)=>{
+    try{
+        const{ emailId,password} = req.body;
+
+        const isEmailIdValid =  await User.findOne({emailId:emailId});
+        if(!isEmailIdValid){
+             throw new Error("invalid email address");
+        }
+ const isPasswordValid = await bcrypt.compare(password, isEmailIdValid.password);
+ if(isPasswordValid){
+    res.send("login successful");
+ }else{
+    throw new Error("incorrect password");
+ }
+    }catch(err){
+      res.status(404).send("error oucered " + err);
+    }
+})
+
 connectDB()
     .then(() => {
         console.log("connection established ");
