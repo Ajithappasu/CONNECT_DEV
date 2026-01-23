@@ -47,11 +47,10 @@ app.post("/login", async(req,res)=>{
         if(!ValidUser){
              throw new Error("invalid email address");
         }
-     
- const isPasswordValid = await bcrypt.compare(password, ValidUser.password);
+ const isPasswordValid = await  ValidUser.validatePassword(password);
  if(isPasswordValid){
     // create a jwt token 
-    const token = await jwt.sign({_id: ValidUser._id},"Dev_connect");
+    const token = await ValidUser.getJWT();
      // create A jwt token
       //add the token to cokiee  and send the responce back to the user
      res.cookie("token",token);
