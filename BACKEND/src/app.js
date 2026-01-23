@@ -1,17 +1,21 @@
 const express = require('express');
-
 const app = express();
 const connectDB = require("./config/DataBase")
 const User = require("./scema/user");
 const validator = require("validator");
 const {validateSignUpData}  = require("./utils/validation");
 const bcrypt= require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
 
 
 // we use this middleWare to  convert  json format request data to  java script object format. 
+// we use use middleware because it can be used in all routes and all typres (get, post etc)
 app.use(express.json());
-// we use use middleware because it can be used in all routes and all typres (get, post etc).
 
+// we use this middle ware so tha we can read cookie 
+app.use(cookieParser());
 
 
 // to display the data of the users
@@ -89,18 +93,46 @@ validateSignUpData(req)
     }
 })
 
+
+app.get("/profile",async(req,res)=>{
+    try{
+    const cookies = req.cookies;
+    const {token}=cookies;
+    if(!token){
+        throw new Error("invalid token");
+    }
+    const decodedMessage = await jwt.verify(token,"Dev_connect");
+    const{_id}= decodedMessage;
+ const user =  await User.findById(_id);
+ if(!user){
+    throw new Error("invalid user");
+ }
+    res.send(user);
+    }catch(err){
+        res.status(404).send("error occured"+err);
+    }
+})
 // login api  user logined in 
 app.post("/login", async(req,res)=>{
     try{
         const{ emailId,password} = req.body;
-
-        const isEmailIdValid =  await User.findOne({emailId:emailId});
-        if(!isEmailIdValid){
+  /// it will find the user with the email id.
+        const ValidUser =  await User.findOne({emailId:emailId});
+        if(!ValidUser){
              throw new Error("invalid email address");
         }
- const isPasswordValid = await bcrypt.compare(password, isEmailIdValid.password);
+     
+ const isPasswordValid = await bcrypt.compare(password, ValidUser.password);
  if(isPasswordValid){
-    res.send("login successful");
+    // create a jwt token 
+    const token = await jwt.sign({_id: ValidUser._id},"Dev_connect");
+     // create A jwt token
+      //add the token to cokiee  and send the responce back to the user
+     res.cookie("token",token);
+
+res.send("login successful");
+
+   
  }else{
     throw new Error("incorrect password");
  }
