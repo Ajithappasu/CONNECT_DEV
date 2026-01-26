@@ -10,7 +10,7 @@ try{
     const fromUserId= req.user._id;
     const  toUserId = req.params.toUserId.trim();
     const status = req.params.status;
-
+console.log(req.user);
 
     
     const isAllowed =["ignored", "intrested"];
@@ -46,8 +46,8 @@ return res.json({
 
     const data =  await connectionRequestModel.save();
     res.json({
-        messsage:req.body.firstName+" is "+status+"in "+toUser.firstName,
-        data,
+        messsage: (req.user.firstName+" is "+status+"in "+toUser.firstName),
+        data
     })
 
 }catch(err){

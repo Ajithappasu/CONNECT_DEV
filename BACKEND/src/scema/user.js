@@ -69,6 +69,8 @@ const userScema = new mongoose.Schema({
     timestamps:true,
 }) ;
 
+userScema.index({firstName:1,lastName:1});
+
 userScema.methods.getJWT = async function (){
     const user = this;
    const token = await jwt.sign({_id: user._id},"Dev_connect",{

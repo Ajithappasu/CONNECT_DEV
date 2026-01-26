@@ -22,6 +22,8 @@ message :"incorrect data entry value ",
     timestamps:true,
 });
 
+sendConnectionRequestScema.index({fromUserId:1, toUserId:1});
+
 sendConnectionRequestScema.pre("save", async function (){
 
 if(this.toUserId.equals(this.fromUserId)){
