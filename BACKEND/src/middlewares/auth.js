@@ -16,9 +16,6 @@ const userAuth = async (req, res, next)=>{
 // we are  giving the value of the user to the request user 
   req.user=user
  next();
-
-
-
     }catch(err){
         res.status(404).send("error occured"+err);
     }
