@@ -4,7 +4,7 @@ const {userAuth} = require("../middlewares/auth");
 const {ConnectionRequestModel}= require("../scema/connectionRequest");
 const User = require("../scema/user"); 
 
-
+// to send a request to user 
 requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req, res)=>{
 try{
     const fromUserId= req.user._id;
@@ -50,6 +50,38 @@ return res.json({
         data
     })
 
+}catch(err){
+    res.status(404).send("error occured "+err);
+}
+})
+
+// accept or rejected   request
+requestRouter.post("/request/review/:status/:requestId", userAuth, async(req, res)=>{
+// in this request we  are  basically the toUser 
+// the from user had sent the  request  and  can review it and accept it or reject
+try{
+    const loggedInUser = req.user;
+    const { status, requestId} = req.params;
+       const isAllowed =["accepted", "rejected"];
+
+const connectionRequest = await  ConnectionRequestModel.findOne({
+    _id:requestId,
+   toUserId: loggedInUser._id,
+   status:"intrested",
+});
+if(!connectionRequest){
+    return res.status(404).json({
+        message : "connection request not valid "
+    })
+}
+
+connectionRequest.status= status;
+const data =  await connectionRequest.save();
+
+res.json({
+    message: "connection request" + status,
+    data 
+})
 }catch(err){
     res.status(404).send("error occured "+err);
 }

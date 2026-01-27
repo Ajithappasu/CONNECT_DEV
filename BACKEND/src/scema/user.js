@@ -68,7 +68,7 @@ const userScema = new mongoose.Schema({
 },{
     timestamps:true,
 }) ;
-
+// by creating index we  can acces the elements very faster 
 userScema.index({firstName:1,lastName:1});
 
 userScema.methods.getJWT = async function (){

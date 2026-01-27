@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
+const User = require("../scema/user");
 
 const sendConnectionRequestScema = new mongoose.Schema({
  fromUserId :{
     type: mongoose.Schema.ObjectId,   
     required:true,
+     ref:"user",
  },
   status :{
 type: String,
@@ -16,6 +18,7 @@ message :"incorrect data entry value ",
  toUserId:{
     type: mongoose.Schema.ObjectId,
     required:true,
+
  },
 
 },{
