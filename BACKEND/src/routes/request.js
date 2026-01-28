@@ -65,7 +65,7 @@ try{
        const isAllowed =["accepted", "rejected"];
 
 const connectionRequest = await  ConnectionRequestModel.findOne({
-    _id:requestId,
+    fromUserId:requestId,
    toUserId: loggedInUser._id,
    status:"intrested",
 });

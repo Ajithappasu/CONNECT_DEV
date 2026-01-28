@@ -9,3 +9,6 @@
   "emailId": "elon@gamil.com",
     "password": "Elon@123"
 }
+
+    "emailId": "Trump@gamil.com",
+    "password": "Trump@123",
