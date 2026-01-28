@@ -18,6 +18,7 @@ message :"incorrect data entry value ",
  toUserId:{
     type: mongoose.Schema.ObjectId,
     required:true,
+    ref :"user",
 
  },
 

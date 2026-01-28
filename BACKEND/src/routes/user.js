@@ -40,7 +40,12 @@ userRouter.get("/user/connections",userAuth, async(req, res)=>{
      }).populate("fromUserId",UserSafeData);
 
 
-     const data = connectionRequest.map((row)=>row.fromUserId);
+     const data = connectionRequest.map((row)=>{
+        if(row.fromUserId == loggedInUser._id){
+           return row.toUserId;
+        }
+     return row.fromUserId;
+    });
 res.json({
     message : " the total accepted requests are ",
     data : data
