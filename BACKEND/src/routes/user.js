@@ -1,9 +1,11 @@
 const express = require("express");
 const userRouter = express.Router();
-const { userAuth}= require("../middlewares/auth")
-const  {ConnectionRequestModel} = require("../scema/connectionRequest")
+const { userAuth}= require("../middlewares/auth");
+const  {ConnectionRequestModel} = require("../scema/connectionRequest");
 
-//   to see the all the request for the user 
+
+const UserSafeData = "firstName  lastName  age  gender  about skills"
+//   to see the all the request(pending) for the user 
 userRouter.get("/user/request/recevied", userAuth,async(req, res)=>{
 
     try{
@@ -13,8 +15,7 @@ const connectionRequest = await ConnectionRequestModel.find({
     toUserId : loggedInUser._id,
     status: "intrested",
 }).populate(
-    "fromUserId",
-    ["firstName", "lastName"]
+    "fromUserId",UserSafeData
 );
 
 
@@ -27,4 +28,25 @@ data : connectionRequest,
     }
 })
 
+// to see the  total connection(accepted) of the logined  user 
+userRouter.get("/user/connections",userAuth, async(req, res)=>{
+    try{
+     const loggedInUser = req.user;
+
+     const connectionRequest= await ConnectionRequestModel.find({
+     $or :    [{toUserId: loggedInUser._id,  status :"accepted"},
+          {toUserId: loggedInUser._id,  status :"accepted"}
+     ]
+     }).populate("fromUserId",UserSafeData);
+
+
+     const data = connectionRequest.map((row)=>row.fromUserId);
+res.json({
+    message : " the total accepted requests are ",
+    data : data
+})
+    }catch(err){
+        res.status(404).send("error occured"+err);
+    }
+})
 module.exports= userRouter;
