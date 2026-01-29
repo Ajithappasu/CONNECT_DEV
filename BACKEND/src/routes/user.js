@@ -2,6 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 const { userAuth}= require("../middlewares/auth");
 const  {ConnectionRequestModel} = require("../scema/connectionRequest");
+const User = require("../scema/user")
 
 
 const UserSafeData = "firstName  lastName  age  gender  about skills"
@@ -52,6 +53,36 @@ res.json({
 })
     }catch(err){
         res.status(404).send("error occured"+err);
+    }
+})
+
+userRouter.get("/feed",userAuth, async(req, res)=>{
+    // in feed we only send new users to loggined user 
+    // we will not send  accepted , ignored or  intrested ones and him self 
+    try{
+        const loggedInUser =  req.user;
+        // we are finding the users  who are  who are already in connection with user
+      const connectionRequests =  await ConnectionRequestModel.find({
+        $or:[{fromUserId:loggedInUser._id},
+            {toUserId:loggedInUser._id}],
+      }).select("fromUserId   toUserId");
+   // adding the  user to set for uniqness 
+      const hideUsersFromFeed = new Set();
+      connectionRequests.forEach((req) => {
+        hideUsersFromFeed.add(req.toUserId),
+        hideUsersFromFeed.add(req.fromUserId)
+      });
+// from all the users we are finding the users   witch are not includde in set 
+      const users = await User.find({  
+       $and :[
+      {  _id:{$nin: Array.from(hideUsersFromFeed)}},
+      { _id :{ $ne : loggedInUser._id}}
+      ]}).select(UserSafeData);
+
+ res.send(users);
+
+    }catch(err){
+        res.status(404).send("error occured "+err);
     }
 })
 module.exports= userRouter;

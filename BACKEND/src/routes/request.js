@@ -10,7 +10,7 @@ try{
     const fromUserId= req.user._id;
     const  toUserId = req.params.toUserId.trim();
     const status = req.params.status;
-console.log(req.user);
+
 
     
     const isAllowed =["ignored", "intrested"];

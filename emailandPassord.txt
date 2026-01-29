@@ -12,3 +12,11 @@
 
     "emailId": "Trump@gamil.com",
     "password": "Trump@123",
+
+       "emailId": "Ajith@gamil.com",
+    "password": "Ajith@123",
+
+
+
+        "emailId": "Revanth@gamil.com",
+    "password": "Reavanth@123",
